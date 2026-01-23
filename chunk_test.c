@@ -16,7 +16,7 @@ void test_expansion() {
     Chunk chunk;
     initChunk(&chunk);
     for (uint8_t i = 0; i < 10; i++) {
-        writeChunk(&chunk, i);
+        writeChunk(&chunk, i, i);
     }
     assert(chunk.count == 10);
     assert(chunk.capacity == 16);
