@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-Wall -Werror -g -MD
 
-OBJS = chunk.o memory.o debug.o value.o vm.o
+OBJS = chunk.o memory.o debug.o value.o vm.o compiler.o scanner.o
 RM = rm -f
 
 main: $(OBJS)
