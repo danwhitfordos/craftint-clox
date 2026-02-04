@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <assert.h>
+
 #include "vm.h"
 #include "test.h"
 #include "chunk.h"
@@ -17,7 +19,8 @@ int main() {
     writeChunk(&chunk, constantLoc, 2);
 
     writeChunk(&chunk, OP_RETURN, 3);
-    interpret(&chunk);
+    InterpretResult res = interpret("123 + 67");
+    assert(res == INTERPRET_OK);
 
     freeVM();
     freeChunk(&chunk);
