@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -Werror -g -MD
+CFLAGS += -Wall -Werror -Wpedantic -Wextra -g -MMD
 
 OBJS = chunk.o memory.o debug.o value.o vm.o compiler.o scanner.o
 RM = rm -f
