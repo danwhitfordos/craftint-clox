@@ -10,11 +10,11 @@ int main() {
     Chunk chunk;
     initChunk(&chunk);
 
-    int constantLoc = addConstant(&chunk, 123);
+    int constantLoc = addConstant(&chunk, NUMBER_VAL(123));
     writeChunk(&chunk, OP_CONSTANT, 1);
     writeChunk(&chunk, constantLoc, 1);
 
-    constantLoc = addConstant(&chunk, 6.7);
+    constantLoc = addConstant(&chunk, NUMBER_VAL(6.7));
     writeChunk(&chunk, OP_CONSTANT, 2);
     writeChunk(&chunk, constantLoc, 2);
 
