@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS += -Wall -Werror -Wpedantic -Wextra -g -MMD
 
-OBJS = chunk.o memory.o debug.o value.o vm.o compiler.o scanner.o
+OBJS = chunk.o memory.o debug.o value.o vm.o compiler.o scanner.o object.o
 RM = rm -f
 
 main: $(OBJS)
