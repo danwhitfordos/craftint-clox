@@ -19,7 +19,7 @@ int main() {
     writeChunk(&chunk, constantLoc, 2);
 
     writeChunk(&chunk, OP_RETURN, 3);
-    InterpretResult res = interpret("123 + 67");
+    InterpretResult res = interpret("123 + 67;");
     assert(res == INTERPRET_OK);
 
     freeVM();
