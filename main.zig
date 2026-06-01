@@ -1,5 +1,6 @@
 const std = @import("std");
 const Io = std.Io;
+const assert = std.debug.assert;
 const c = @import("c");
 
 fn repl(io: std.Io) void {
@@ -23,6 +24,20 @@ fn repl(io: std.Io) void {
     }
 }
 
+fn runFile(io: std.Io, alloc: std.mem.Allocator, path: [:0]const u8) !c.InterpretResult {
+    const cwd = std.Io.Dir.cwd();
+    const file = try cwd.openFile(io, path, .{ .mode = .read_only });
+    defer file.close(io);
+
+    var buffer: [1024]u8 = undefined;
+    var file_reader = file.reader(io, &buffer);
+    const file_size = try file_reader.getSize();
+    var source: [:0]u8 = try alloc.allocSentinel(u8, file_size, 0);
+    const n = try file_reader.interface.readSliceShort(source);
+    assert(n == file_size);
+    return c.interpret(source.ptr);
+}
+
 pub fn main(init: std.process.Init) !void {
     c.initVM();
     defer c.freeVM();
@@ -36,9 +51,15 @@ pub fn main(init: std.process.Init) !void {
         repl(io);
     } else if (args.len == 2) {
         const path = args[1];
-        c.runFile(path);
+        const res = try runFile(io, arena, path);
+        switch (res) {
+            c.INTERPRET_OK => return,
+            c.INTERPRET_COMPILE_ERROR => return error.CompileError,
+            c.INTERPRET_RUNTIME_ERROR => return error.RuntimeError,
+            else => return error.UnknownError,
+        }
     } else {
         std.debug.print("Usage: {s} [path]\n", .{args[0]});
-        return;
+        return error.InvalidArguments;
     }
 }
