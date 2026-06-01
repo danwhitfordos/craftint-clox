@@ -57,14 +57,25 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&run_chunk_tests.step);
     test_step.dependOn(&run_vm_tests.step);
 
+
+    const main_translate_c = b.addTranslateC(.{
+        .root_source_file = b.path("main.c"),
+        .target = target,
+        .optimize = optimize,
+    });
     const main_module = b.createModule(.{
         .target = target,
         .optimize = optimize,
-        .link_libc = true,
+        .root_source_file = b.path("main.zig"),
+        .imports = &.{
+            .{
+                .name = "c",
+                .module = main_translate_c.createModule(),
+            },
+        },
     });
     main_module.addCSourceFile(.{
         .file = b.path("main.c"),
-        .flags = &[_][]const u8{"-std=c23"},
     });
 
     const exe = b.addExecutable(.{
