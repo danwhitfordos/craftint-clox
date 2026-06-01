@@ -30,10 +30,38 @@ typedef struct {
 #define AS_NUMBER(value) 	((value).as.number)
 #define AS_OBJ(value)       ((value).as.obj)
 
-#define BOOL_VAL(value)		((Value) {VAL_BOOL,   {.boolean = value}})
-#define NIL_VAL			    ((Value) {VAL_NIL,    {.number = 0}})
-#define OBJ_VAL(object)     ((Value) {VAL_OBJ,    {.obj = (Obj*) object}})
-#define NUMBER_VAL(value)	((Value) {VAL_NUMBER, {.number = value}})
+static inline Value boolValue(bool value) {
+    Value result;
+    result.type = VAL_BOOL;
+    result.as.boolean = value;
+    return result;
+}
+
+static inline Value nilValue(void) {
+    Value result;
+    result.type = VAL_NIL;
+    result.as.number = 0;
+    return result;
+}
+
+static inline Value objValue(Obj *object) {
+    Value result;
+    result.type = VAL_OBJ;
+    result.as.obj = object;
+    return result;
+}
+
+static inline Value numberValue(double value) {
+    Value result;
+    result.type = VAL_NUMBER;
+    result.as.number = value;
+    return result;
+}
+
+#define BOOL_VAL(value)		(boolValue(value))
+#define NIL_VAL			    (nilValue())
+#define OBJ_VAL(object)     (objValue((Obj*) object))
+#define NUMBER_VAL(value)	(numberValue(value))
 
 typedef struct {
     int capacity;
