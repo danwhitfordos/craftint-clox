@@ -5,7 +5,7 @@
 #include "test.h"
 #include "chunk.h"
 
-int main() {
+int main(void) {
     initVM();
     Chunk chunk;
     initChunk(&chunk);

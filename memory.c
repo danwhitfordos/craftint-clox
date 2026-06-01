@@ -28,7 +28,7 @@ void freeObject(Obj *object) {
     }
 }
 
-void freeObjects() {
+void freeObjects(void) {
     Obj *object = vm.objects;
     while (object != NULL) {
         Obj *next = object->next;

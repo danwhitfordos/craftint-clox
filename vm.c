@@ -11,7 +11,7 @@
 
 VM vm;
 
-static void resetStack() {
+static void resetStack(void) {
     vm.stackTop = vm.stack;
 }
 
@@ -28,7 +28,7 @@ static void runtimeError(const char *format, ...) {
     resetStack();
 }
 
-void initVM() {
+void initVM(void) {
     resetStack();
     vm.objects = NULL;
 
@@ -36,7 +36,7 @@ void initVM() {
     initTable(&vm.strings);
 }
 
-void freeVM() {
+void freeVM(void) {
     freeTable(&vm.globals);
     freeTable(&vm.strings);
     freeObjects();
@@ -47,7 +47,7 @@ void push(Value value) {
     vm.stackTop++;
 }
 
-Value pop() {
+Value pop(void) {
     vm.stackTop--;
     return *vm.stackTop;
 }
@@ -60,7 +60,7 @@ static bool isFalsey(Value value) {
     return IS_NIL(value) || (IS_BOOL(value) && !AS_BOOL(value));
 }
 
-static void concatenate() {
+static void concatenate(void) {
     ObjString *b = AS_STRING(pop());
     ObjString *a = AS_STRING(pop());
 
@@ -74,7 +74,7 @@ static void concatenate() {
     push(OBJ_VAL(result));
 }
 
-static InterpretResult run() {
+static InterpretResult run(void) {
 #define READ_BYTE() (*vm.ip++)
 #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
 #define READ_STRING() AS_STRING(READ_CONSTANT())

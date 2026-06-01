@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "chunk.h"
 
-void test_init() {
+void test_init(void) {
     Chunk chunk;
     initChunk(&chunk);
     assert(chunk.count == 0);
@@ -12,7 +12,7 @@ void test_init() {
     freeChunk(&chunk);
 }
 
-void test_expansion() {
+void test_expansion(void) {
     Chunk chunk;
     initChunk(&chunk);
     for (uint8_t i = 0; i < 10; i++) {
