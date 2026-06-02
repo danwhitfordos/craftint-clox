@@ -12,57 +12,53 @@ const object_sources = &.{
     "table.c",
 };
 
-fn create_test(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode, header: []const u8, test_name: []const u8, zigfile: []const u8) *std.Build.Step.Run {
-    const translate_c = b.addTranslateC(.{
-        .root_source_file = b.path(header),
-        .target = target,
-        .optimize = optimize,
-    });
-
-    const test_step = b.addTest(.{
-        .name = test_name,
-        .root_module = b.createModule(.{
-            .root_source_file = b.path(zigfile),
-            .target = target,
-            .optimize = optimize,
-            .link_libc = true,
-            .imports = &.{
-                .{
-                    .name = "c",
-                    .module = translate_c.createModule(),
-                },
-            },
-        }),
-    });
-
-    test_step.root_module.addCSourceFiles(.{
-        .files = object_sources,
-        .flags = &.{},
-    });
-
-    return b.addRunArtifact(test_step);
-}
+const test_sources = [_][]const u8{
+    "chunk.zig",
+    "scanner.zig",
+    "vm.zig",
+};
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const run_chunk_tests = create_test(b, target, optimize, "./chunk.h", "chunk test", "chunk.zig");
-    const run_scanner_tests = create_test(b, target, optimize, "./scanner.h", "scanner test", "scanner.zig");
-    const run_vm_tests = create_test(b, target, optimize, "./vm.h", "vm test", "vm.zig");
-
-    const test_step = b.step("test", "Run unit tests");
-
-    test_step.dependOn(&run_scanner_tests.step);
-    test_step.dependOn(&run_chunk_tests.step);
-    test_step.dependOn(&run_vm_tests.step);
-
-
-    const main_translate_c = b.addTranslateC(.{
-        .root_source_file = b.path("main.c"),
+    const translate_c = b.addTranslateC(.{
+        .root_source_file = b.path("main.h"),
         .target = target,
         .optimize = optimize,
     });
+
+    const test_step = b.step("test", "Run unit tests");
+
+    for (test_sources) |zigfile| {
+        const test_name = std.fs.path.basename(zigfile);
+
+        const zig_test = b.addTest(.{
+            .name = test_name,
+            .root_module = b.createModule(.{
+                .root_source_file = b.path(zigfile),
+                .target = target,
+                .optimize = optimize,
+                .link_libc = true,
+                .imports = &.{
+                    .{
+                        .name = "c",
+                        .module = translate_c.createModule(),
+                    },
+                },
+            }),
+        });
+
+        zig_test.root_module.addCSourceFiles(.{
+            .files = object_sources,
+            .flags = &.{},
+        });
+
+        const run_test = b.addRunArtifact(zig_test);
+
+        test_step.dependOn(&run_test.step);
+    }
+
     const main_module = b.createModule(.{
         .target = target,
         .optimize = optimize,
@@ -70,12 +66,9 @@ pub fn build(b: *std.Build) void {
         .imports = &.{
             .{
                 .name = "c",
-                .module = main_translate_c.createModule(),
+                .module = translate_c.createModule(),
             },
         },
-    });
-    main_module.addCSourceFile(.{
-        .file = b.path("main.c"),
     });
 
     const exe = b.addExecutable(.{
