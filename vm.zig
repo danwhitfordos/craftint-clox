@@ -17,9 +17,6 @@ pub fn freeVM() void {
 
 pub fn setOutfile(buf: []u8) void {
     const f = c.fmemopen(buf.ptr, buf.len, "w");
-    if (f == null) {
-        std.debug.print("oops", .{});
-    }
     c.vm.outfile = f;
 }
 
