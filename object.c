@@ -38,31 +38,31 @@ static uint32_t hashString(const char *key, int length) {
 }
 
 ObjString *takeString(char *chars, int length) {
-    uint32_t hash = hashString(chars, length);
-    ObjString *interned = tableFindString(&vm.strings, chars, length, hash);
-    if (interned != NULL) {
-        FREE_ARRAY(char, chars, length+1);
-        return interned;
-    }
-    return allocateString(chars, length, hash);
+  uint32_t hash = hashString(chars, length);
+  ObjString *interned = tableFindString(&vm.strings, chars, length, hash);
+  if (interned != NULL) {
+    FREE_ARRAY(char, chars, length+1);
+    return interned;
+  }
+  return allocateString(chars, length, hash);
 }
 
 ObjString *copyString(const char *chars, int length) {
-    uint32_t hash = hashString(chars, length);
-    ObjString *interned = tableFindString(&vm.strings, chars, length, hash);
-    if (interned != NULL) {
-        return interned;
-    }
-    char *heapChars = ALLOCATE(char, length + 1);
-    memcpy(heapChars, chars, length);
-    heapChars[length] = '\0';
+  uint32_t hash = hashString(chars, length);
+  ObjString *interned = tableFindString(&vm.strings, chars, length, hash);
+  if (interned != NULL) {
+    return interned;
+  }
+  char *heapChars = ALLOCATE(char, length + 1);
+  memcpy(heapChars, chars, length);
+  heapChars[length] = '\0';
     return allocateString(heapChars, length, hash);
 }
 
-void printObject(Value value) {
-    switch (OBJ_TYPE(value)) {
-        case OBJ_STRING:
-            printf("%s", AS_CSTRING(value));
-            break;
-    }
+void printObject(FILE *f, Value value) {
+  switch (OBJ_TYPE(value)) {
+  case OBJ_STRING:
+    fprintf(f, "%s", AS_CSTRING(value));
+    break;
+  }
 }

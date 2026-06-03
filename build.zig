@@ -16,6 +16,15 @@ const test_sources = [_][]const u8{
     "chunk.zig",
     "scanner.zig",
     "vm.zig",
+    "main.zig",
+};
+
+const c_flags = &.{
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic",
+    "-Werror",
+    "-std=c23",
 };
 
 pub fn build(b: *std.Build) void {
@@ -26,6 +35,20 @@ pub fn build(b: *std.Build) void {
         .root_source_file = b.path("main.h"),
         .target = target,
         .optimize = optimize,
+    });
+
+    const cmod = translate_c.createModule();
+
+    const libvm = b.addModule("vm", .{
+        .root_source_file = b.path("vm.zig"),
+        .target = target,
+        .optimize = optimize,
+        .imports = &.{
+            .{
+                .name = "c",
+                .module = cmod,
+            },
+        },
     });
 
     const test_step = b.step("test", "Run unit tests");
@@ -43,7 +66,11 @@ pub fn build(b: *std.Build) void {
                 .imports = &.{
                     .{
                         .name = "c",
-                        .module = translate_c.createModule(),
+                        .module = cmod,
+                    },
+                    .{
+                        .name = "vm",
+                        .module = libvm,
                     },
                 },
             }),
@@ -51,7 +78,7 @@ pub fn build(b: *std.Build) void {
 
         zig_test.root_module.addCSourceFiles(.{
             .files = object_sources,
-            .flags = &.{},
+            .flags = c_flags,
         });
 
         const run_test = b.addRunArtifact(zig_test);
@@ -65,8 +92,8 @@ pub fn build(b: *std.Build) void {
         .root_source_file = b.path("main.zig"),
         .imports = &.{
             .{
-                .name = "c",
-                .module = translate_c.createModule(),
+                .name = "vm",
+                .module = libvm,
             },
         },
     });
@@ -78,15 +105,8 @@ pub fn build(b: *std.Build) void {
 
     exe.root_module.addCSourceFiles(.{
         .files = object_sources,
-        .flags = &.{
-            "-Wall",
-            "-Wextra",
-            "-Wpedantic",
-            "-Werror",
-            "-std=c23",
-        },
+        .flags = c_flags,
     });
-    exe.root_module.addIncludePath(.{ .cwd_relative = "." });
 
     b.installArtifact(exe);
 

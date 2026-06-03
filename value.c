@@ -26,20 +26,20 @@ void freeValueArray(ValueArray *array) {
     initValueArray(array);
 }
 
-void printValue(Value value) {
-    switch (value.type) {
-	case VAL_BOOL:
-	    printf(AS_BOOL(value) ? "true" : "false");
-	    break;
-	case VAL_NIL:
-	    printf("nil");
-	    break;
-	case VAL_NUMBER:
-	    printf("%g", AS_NUMBER(value));
-	    break;
-    case VAL_OBJ:
-        printObject(value);
-        break;
+void printValue(FILE *f, Value value) {
+  switch (value.type) {
+  case VAL_BOOL:
+    fprintf(f, AS_BOOL(value) ? "true" : "false");
+    break;
+  case VAL_NIL:
+    fprintf(f, "nil");
+    break;
+  case VAL_NUMBER:
+    fprintf(f, "%g", AS_NUMBER(value));
+    break;
+  case VAL_OBJ:
+    printObject(f, value);
+    break;
     }
 }
 

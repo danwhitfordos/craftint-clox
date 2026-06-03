@@ -27,7 +27,7 @@ struct ObjString {
 
 ObjString *takeString(char *chars, int length);
 ObjString *copyString(const char *chars, int length);
-void printObject(Value value);
+void printObject(FILE *f, Value value);
 
 static inline bool isObjType(Value value, ObjType type) {
     return IS_OBJ(value) && AS_OBJ(value)->type == type;

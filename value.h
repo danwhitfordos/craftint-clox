@@ -1,6 +1,7 @@
 #ifndef clox_value_h
 #define clox_value_h
 #include "common.h"
+#include "stdio.h"
 
 typedef struct Obj Obj;
 typedef struct ObjString ObjString;
@@ -73,6 +74,6 @@ bool valuesEqual(Value a, Value b);
 void initValueArray(ValueArray *array);
 void writeValueArray(ValueArray *array, Value value);
 void freeValueArray(ValueArray *array);
-void printValue(Value value);
+void printValue(FILE *f, Value value);
 
 #endif

@@ -1,0 +1,15 @@
+
+if (2 + 2 == 4) print "two plus two is four";
+if (2 + 2 == 5) print "this shouldn't print";
+
+if (2 + 2 == 4) {
+   print("ok");
+} else {
+  print("bad");
+}
+
+if (false) {
+  print("bad");
+} else {
+  print("ok");
+}
