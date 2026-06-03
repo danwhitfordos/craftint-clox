@@ -1,11 +1,9 @@
 const std = @import("std");
 const c = @import("c");
 
-pub const InterpretResult = enum {
-    OK,
-    COMPILE_ERROR,
-    RUNTIME_ERROR,
-    FUBAR,
+const InterpretError = error{
+    Compiler,
+    Runtime,
 };
 
 pub fn initVM() void {
@@ -25,12 +23,12 @@ pub fn setOutfile(buf: []u8) void {
     c.vm.outfile = f;
 }
 
-pub fn interpret(src: [*:0]const u8) InterpretResult {
+pub fn interpret(src: [*:0]const u8) !void {
     return switch (c.interpret(src)) {
-        c.INTERPRET_OK => InterpretResult.OK,
-        c.INTERPRET_COMPILE_ERROR => InterpretResult.COMPILE_ERROR,
-        c.INTERPRET_RUNTIME_ERROR => InterpretResult.RUNTIME_ERROR,
-        else => InterpretResult.FUBAR,
+        c.INTERPRET_OK => {},
+        c.INTERPRET_COMPILE_ERROR => InterpretError.Compiler,
+        c.INTERPRET_RUNTIME_ERROR => InterpretError.Runtime,
+        else => unreachable,
     };
 }
 
@@ -62,8 +60,7 @@ test "test hello world" {
 
         setOutfile(&buf);
 
-        const res = interpret("print \"Hello, world!\";");
-        try std.testing.expect(InterpretResult.OK == res);
+        try interpret("print \"Hello, world!\";");
     }
 
     try std.testing.expectStringStartsWith(&buf, "Hello, world!\n");
@@ -76,8 +73,7 @@ test "test global var" {
         defer freeVM();
         setOutfile(&buf);
 
-        const res = interpret("var m = \"FOO\";  var a = 10;  var b = 2; print m; print a/b;");
-        try std.testing.expect(InterpretResult.OK == res);
+        try interpret("var m = \"FOO\";  var a = 10;  var b = 2; print m; print a/b;");
     }
 
     try std.testing.expectStringStartsWith(&buf, "FOO\n5\n");

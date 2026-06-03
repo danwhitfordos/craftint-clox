@@ -20,12 +20,15 @@ fn repl(io: std.Io) void {
         if (line_opt) |line| {
             @memcpy(c_buf[0..line.len], line);
             c_buf[line.len] = 0;
-            _ = vm.interpret(&c_buf);
+            vm.interpret(&c_buf) catch {
+                std.debug.print("Error on line :(\n", .{});
+                continue;
+            };
         }
     }
 }
 
-fn runFile(io: std.Io, alloc: std.mem.Allocator, path: [:0]const u8) !vm.InterpretResult {
+fn runFile(io: std.Io, alloc: std.mem.Allocator, path: [:0]const u8) !void {
     const cwd = std.Io.Dir.cwd();
     const file = try cwd.openFile(io, path, .{ .mode = .read_only });
     defer file.close(io);
@@ -54,13 +57,7 @@ pub fn main(init: std.process.Init) !void {
         repl(io);
     } else if (args.len == 2) {
         const path = args[1];
-        const res = try runFile(io, arena, path);
-        switch (res) {
-            vm.InterpretResult.OK => return,
-            vm.InterpretResult.COMPILE_ERROR => return error.CompileError,
-            vm.InterpretResult.RUNTIME_ERROR => return error.RuntimeError,
-            vm.InterpretResult.FUBAR => return error.Fubar,
-        }
+        try runFile(io, arena, path);
     } else {
         std.debug.print("Usage: {s} [path]\n", .{args[0]});
         return error.InvalidArguments;
@@ -94,8 +91,7 @@ test "test_examples" {
             defer vm.freeVM();
             vm.setOutfile(&buf);
 
-            const res = try runFile(std.testing.io, std.testing.allocator, name);
-            try std.testing.expect(res == vm.InterpretResult.OK);
+            try runFile(std.testing.io, std.testing.allocator, name);
         }
         try std.testing.expectStringStartsWith(&buf, expected);
     }
