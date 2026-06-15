@@ -56,7 +56,7 @@ pub fn main(init: std.process.Init) !void {
     if (args.len == 1) {
         repl(io);
     } else if (args.len == 2) {
-        const path = args[1];
+        const path = args[1];        
         try runFile(io, arena, path);
     } else {
         std.debug.print("Usage: {s} [path]\n", .{args[0]});
@@ -64,35 +64,27 @@ pub fn main(init: std.process.Init) !void {
     }
 }
 
-test "test_examples" {
-    const tests = .{
-        .{
-            "examples/hello_world.lox",
-            "Hello, world!\n",
-        },
-        .{
-            "examples/locals.lox",
-            "10\n50\n",
-        },
-        .{
-            "examples/jumping.lox",
-            "two plus two is four\nok\nok\n",
-        },
-    };
+fn test_file(fname: [:0]const u8, expected_output: [:0]const u8) !void {
+    const arena: std.mem.Allocator = std.testing.allocator;
+    const io = std.testing.io;    
 
-    var name: [:0]const u8 = undefined;
-    var expected: [:0]const u8 = undefined;
+    var buf: [1024]u8 = undefined;
+    {
+        vm.initVM();
+        defer vm.freeVM();
 
-    inline for (tests) |t| {
-        name, expected = t;
-        var buf: [50]u8 = undefined;
-        {
-            vm.initVM();
-            defer vm.freeVM();
-            vm.setOutfile(&buf);
-
-            try runFile(std.testing.io, std.testing.allocator, name);
-        }
-        try std.testing.expectStringStartsWith(&buf, expected);
+        vm.setOutfile(&buf);
+        try runFile(io, arena, fname);
     }
+    try std.testing.expectStringStartsWith(&buf, expected_output);
+}
+
+test {
+    try test_file("examples/hello_world.lox", "Hello, world!\n");
+}
+test {
+    try test_file("examples/locals.lox", "10\n50\n");
+}
+test {
+    try test_file("examples/jumping.lox", "two plus two is four\n");
 }
