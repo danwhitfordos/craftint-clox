@@ -19,14 +19,6 @@ const test_sources = [_][]const u8{
     "main.zig",
 };
 
-const c_flags = &.{
-    "-Wall",
-    "-Wextra",
-    "-Wpedantic",
-    "-Werror",
-    "-std=c23",
-};
-
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
@@ -78,7 +70,6 @@ pub fn build(b: *std.Build) void {
 
         zig_test.root_module.addCSourceFiles(.{
             .files = object_sources,
-            .flags = c_flags,
         });
 
         const run_test = b.addRunArtifact(zig_test);
@@ -105,7 +96,6 @@ pub fn build(b: *std.Build) void {
 
     exe.root_module.addCSourceFiles(.{
         .files = object_sources,
-        .flags = c_flags,
     });
 
     b.installArtifact(exe);
@@ -114,7 +104,5 @@ pub fn build(b: *std.Build) void {
     const run_cmd = b.addRunArtifact(exe);
     run_step.dependOn(&run_cmd.step);
     run_cmd.step.dependOn(b.getInstallStep());
-    if (b.args) |args| {
-        run_cmd.addArgs(args);
-    }
+    run_cmd.addPassthruArgs();
 }

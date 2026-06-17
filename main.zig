@@ -36,7 +36,7 @@ fn runFile(io: std.Io, alloc: std.mem.Allocator, path: [:0]const u8) !void {
     var buffer: [1024]u8 = undefined;
     var file_reader = file.reader(io, &buffer);
     const file_size = try file_reader.getSize();
-    var source: [:0]u8 = try alloc.allocSentinel(u8, file_size, 0);
+    const source: [:0]u8 = try alloc.allocSentinel(u8, file_size, 0);
     defer alloc.free(source);
 
     const n = try file_reader.interface.readSliceShort(source);
@@ -56,7 +56,7 @@ pub fn main(init: std.process.Init) !void {
     if (args.len == 1) {
         repl(io);
     } else if (args.len == 2) {
-        const path = args[1];        
+        const path = args[1];
         try runFile(io, arena, path);
     } else {
         std.debug.print("Usage: {s} [path]\n", .{args[0]});
@@ -66,7 +66,7 @@ pub fn main(init: std.process.Init) !void {
 
 fn test_file(fname: [:0]const u8, expected_output: [:0]const u8) !void {
     const arena: std.mem.Allocator = std.testing.allocator;
-    const io = std.testing.io;    
+    const io = std.testing.io;
 
     var buf: [1024]u8 = undefined;
     {
