@@ -64,11 +64,11 @@ pub fn main(init: std.process.Init) !void {
     }
 }
 
-fn test_file(fname: [:0]const u8, expected_output: [:0]const u8) !void {
+fn test_file(fname: [:0]const u8, comptime expected_output: [:0]const u8) !void {
     const arena: std.mem.Allocator = std.testing.allocator;
     const io = std.testing.io;
 
-    var buf: [1024]u8 = undefined;
+    var buf: [expected_output.len + 64:0]u8 = @splat(0);
     {
         vm.initVM();
         defer vm.freeVM();
@@ -76,7 +76,9 @@ fn test_file(fname: [:0]const u8, expected_output: [:0]const u8) !void {
         vm.setOutfile(&buf);
         try runFile(io, arena, fname);
     }
-    try std.testing.expectStringStartsWith(&buf, expected_output);
+
+    const buf_ptr = std.mem.span(@as([*:0]u8, &buf));
+    try std.testing.expectEqualStrings(expected_output, buf_ptr);
 }
 
 test {
@@ -86,5 +88,12 @@ test {
     try test_file("examples/locals.lox", "10\n50\n");
 }
 test {
-    try test_file("examples/jumping.lox", "two plus two is four\n");
+    try test_file("examples/jumping.lox",
+        \\two plus two is four
+        \\ok
+        \\ok
+        \\ok
+        \\ok
+        \\
+    );
 }

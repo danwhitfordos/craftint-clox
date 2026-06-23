@@ -12,6 +12,14 @@ const object_sources = &.{
     "table.c",
 };
 
+const c_flags = &.{
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic",
+    "-Werror",
+    "-std=c23",
+};
+
 const test_sources = [_][]const u8{
     "chunk.zig",
     "scanner.zig",
@@ -70,6 +78,7 @@ pub fn build(b: *std.Build) void {
 
         zig_test.root_module.addCSourceFiles(.{
             .files = object_sources,
+            .flags = c_flags,
         });
 
         const run_test = b.addRunArtifact(zig_test);
