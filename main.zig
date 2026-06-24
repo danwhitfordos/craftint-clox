@@ -73,7 +73,7 @@ fn test_file(fname: [:0]const u8, comptime expected_output: [:0]const u8) !void 
         vm.initVM();
         defer vm.freeVM();
 
-        vm.setOutfile(&buf);
+        vm.setAllOutputToBuf(&buf);
         try runFile(io, arena, fname);
     }
 

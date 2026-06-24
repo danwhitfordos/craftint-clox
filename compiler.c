@@ -46,9 +46,10 @@ typedef struct {
 } Local;
 
 typedef struct {
-    Local locals[UINT8_COUNT];
-    int localCount;
-    int scopeDepth;
+    Local   locals[UINT8_COUNT];
+    int     localCount;
+    int     scopeDepth;
+    FILE    *errfile;
 } Compiler;
 
 Parser parser;
@@ -62,17 +63,17 @@ static Chunk *currentChunk(void) {
 static void errorAt(Token *token, const char *message) {
     if (parser.panicMode) return;
     parser.panicMode = true;
-    fprintf(stderr, "[line %d] Error", token->line);
+    fprintf(current->errfile, "[line %d] Error", token->line);
 
     if (token->type == TOKEN_EOF) {
-	fprintf(stderr, " at end");
+	fprintf(current->errfile, " at end");
     } else if (token->type == TOKEN_ERROR) {
 	// Nothing (yet?)
     } else {
-	fprintf(stderr, " at '%.*s'", token->length, token->start);
+	fprintf(current->errfile, " at '%.*s'", token->length, token->start);
     }
 
-    fprintf(stderr, ": %s\n", message);
+    fprintf(current->errfile, ": %s\n", message);
     parser.hadError = true;
 }
 
@@ -628,10 +629,11 @@ static void statement(void) {
   }
 }
 
-bool compile(const char *source, Chunk *chunk) {
+bool compile(const char *source, Chunk *chunk, FILE *errfile) {
     initScanner(source);
     Compiler compiler;
     initCompiler(&compiler);
+    compiler.errfile = errfile;
     compilingChunk = chunk;
 
     parser.hadError = false;
@@ -643,6 +645,7 @@ bool compile(const char *source, Chunk *chunk) {
         declaration();
     }
 
+    fflush(compiler.errfile);
     endCompiler();
     return !parser.hadError;
 }

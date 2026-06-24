@@ -82,7 +82,6 @@ pub fn build(b: *std.Build) void {
         });
 
         const run_test = b.addRunArtifact(zig_test);
-
         test_step.dependOn(&run_test.step);
     }
 

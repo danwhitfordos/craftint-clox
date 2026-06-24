@@ -18,29 +18,14 @@ static void resetStack(void) {
 static void runtimeError(const char *format, ...) {
     va_list args;
     va_start(args, format);
-    fprintf(stderr, format, args);
+    fprintf(vm.errfile, format, args);
     va_end(args);
-    fputs("\n", stderr);
+    fputs("\n", vm.errfile);
 
     size_t instruction = vm.ip - vm.chunk->code - 1;
     int line = vm.chunk->lines[instruction];
-    fprintf(stderr, "[line %d] in script\n", line);
+    fprintf(vm.errfile, "[line %d] in script\n", line);
     resetStack();
-}
-
-void initVM(void) {
-    resetStack();
-    vm.objects = NULL;
-    vm.outfile = stdout;
-    
-    initTable(&vm.globals);
-    initTable(&vm.strings);
-}
-
-void freeVM(void) {
-    freeTable(&vm.globals);
-    freeTable(&vm.strings);
-    freeObjects();
 }
 
 void push(Value value) {
@@ -94,13 +79,13 @@ static InterpretResult run(void) {
 
   for (;;) {
 #ifdef DEBUG_TRACE_EXECUTION
-    fprintf(stderr, "\t\t");
+    fprintf(vm.errfile, "\t\t");
     for (Value *slot = vm.stack; slot < vm.stackTop; slot++) {
-      fprintf(stderr, "[ ");
-      printValue(stderr, *slot);
-      fprintf(stderr, " ]");
+      fprintf(vm.errfile, "[ ");
+      printValue(vm.errfile, *slot);
+      fprintf(vm.errfile, " ]");
     }
-    fprintf(stderr, "\n");
+    fprintf(vm.errfile, "\n");
     disassembleInstruction(vm.chunk, (int)(vm.ip - vm.chunk->code));
 #endif
     uint8_t instruction;
@@ -235,9 +220,9 @@ InterpretResult interpret(const char *source) {
     Chunk chunk;
     initChunk(&chunk);
 
-    if(!compile(source, &chunk)) {
-	freeChunk(&chunk);
-	return INTERPRET_COMPILE_ERROR;
+    if(!compile(source, &chunk, vm.errfile)) {
+      freeChunk(&chunk);
+      return INTERPRET_COMPILE_ERROR;
     }
 
     vm.chunk = &chunk;
