@@ -105,6 +105,7 @@ pub fn build(b: *std.Build) void {
 
     exe.root_module.addCSourceFiles(.{
         .files = object_sources,
+        .flags = c_flags,
     });
 
     b.installArtifact(exe);

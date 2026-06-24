@@ -94,6 +94,22 @@ test {
         \\ok
         \\ok
         \\ok
+        \\while i
+        \\0
+        \\while i
+        \\1
+        \\while i
+        \\2
+        \\while i
+        \\3
+        \\while i
+        \\4
+        \\for j
+        \\0
+        \\for j
+        \\1
+        \\for j
+        \\2
         \\
     );
 }
