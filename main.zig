@@ -113,3 +113,14 @@ test {
         \\
     );
 }
+test {
+    try test_file("examples/functions.lox",
+        \\<fn, areWeHavingItYet>
+        \\Yes we are!
+        \\22
+        \\
+    );
+}
+test {
+    try test_file("examples/fib.lox", "55\n");
+}

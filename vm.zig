@@ -8,6 +8,7 @@ const InterpretError = error{
 
 fn resetStack() void {
     c.vm.stackTop = &c.vm.stack;
+    c.vm.frameCount = 0;
 }
 
 pub fn initVM() void {
@@ -18,10 +19,27 @@ pub fn initVM() void {
 
     c.initTable(&c.vm.globals);
     c.initTable(&c.vm.strings);
+
+    c.initNative();
 }
 
 pub fn freeVM() void {
-    _ = c.fflush(c.vm.outfile);
+    const out = c.vm.outfile;
+    const err = c.vm.errfile;
+
+    if (out != c.stdout and out != c.stderr) {
+        _ = c.fflush(out);
+        _ = c.fclose(out);
+    }
+
+    if (err != out and err != c.stdout and err != c.stderr) {
+        _ = c.fflush(err);
+        _ = c.fclose(err);
+    }
+
+    c.vm.outfile = c.stdout;
+    c.vm.errfile = c.stderr;
+
     c.freeTable(&c.vm.globals);
     c.freeTable(&c.vm.strings);
     c.freeObjects();
