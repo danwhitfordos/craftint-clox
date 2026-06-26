@@ -35,8 +35,7 @@ static int test_chunk_expansion(void)
     return 1;
 }
 
-// Public interface for test runner
-int run_chunk_tests(void)
+int main(void)
 {
     int passed = 0;
     int total = 0;
@@ -46,5 +45,5 @@ int run_chunk_tests(void)
     RUN_TEST("test_chunk_expansion", test_chunk_expansion);
     
     printf("\n%d/%d chunk tests passed\n", passed, total);
-    return (passed == total);
+    return (passed == total) ? 0 : 1;
 }

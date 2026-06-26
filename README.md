@@ -15,9 +15,11 @@ cmake -B build
 cmake --build build
 ```
 
-The build process creates two executables in the `build/` directory:
+The build process creates these executables in the `build/` directory:
 - `clox` - The main Lox interpreter
-- `test-runner` - The test suite (used by CTest)
+- `test_chunk` - Chunk unit tests
+- `test_scanner` - Scanner unit tests
+- `test_integration` - Integration tests
 
 ## Running Tests
 
@@ -27,10 +29,12 @@ Run all tests using CTest:
 ctest --output-on-failure --test-dir build
 ```
 
-Or run the test executable directly:
+Or run an individual test executable directly:
 
 ```bash
-./build/test-runner
+./build/test_chunk
+./build/test_scanner
+./build/test_integration
 ```
 
 ## Running the Interpreter

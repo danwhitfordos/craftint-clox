@@ -31,18 +31,29 @@ add_executable(clox src/main.c ${CORE_SOURCES})
 # Test executable
 enable_testing()
 
-set(TEST_SOURCES
+add_executable(test_chunk
     ${CORE_SOURCES}
-    tests/test_runner.c
     tests/test_chunk.c
+)
+target_include_directories(test_chunk PRIVATE src tests)
+
+add_executable(test_scanner
+    ${CORE_SOURCES}
     tests/test_scanner.c
+)
+target_include_directories(test_scanner PRIVATE src tests)
+
+add_executable(test_integration
+    ${CORE_SOURCES}
     tests/test_integration.c
 )
+target_include_directories(test_integration PRIVATE src tests)
 
-add_executable(test-runner ${TEST_SOURCES})
-target_include_directories(test-runner PRIVATE src tests)
+# Register each test executable with CTest
+add_test(NAME test_chunk COMMAND test_chunk)
+add_test(NAME test_scanner COMMAND test_scanner)
+add_test(NAME test_integration COMMAND test_integration)
 
-# Register the test executable with CTest
-add_test(NAME all_tests COMMAND test-runner)
 # Set working directory for tests so relative paths work
-set_tests_properties(all_tests PROPERTIES WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+set_tests_properties(test_chunk test_scanner test_integration
+    PROPERTIES WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")

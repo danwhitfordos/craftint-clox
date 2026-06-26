@@ -140,8 +140,7 @@ static int test_fib(void)
     return testFile("examples/fib.lox", "55\n");
 }
 
-// Public interface for test runner
-int run_integration_tests(void)
+int main(void)
 {
     int passed = 0;
     int total = 0;
@@ -154,5 +153,5 @@ int run_integration_tests(void)
     RUN_TEST("test_fib", test_fib);
     
     printf("\n%d/%d integration tests passed\n", passed, total);
-    return (passed == total);
+    return (passed == total) ? 0 : 1;
 }

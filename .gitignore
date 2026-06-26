@@ -10,3 +10,10 @@ build/
 build*/
 cmake-build-*/
 CMakeUserPresets.json
+
+# Accidental in-source CMake/CTest artifacts
+Testing/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake

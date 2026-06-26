@@ -17,8 +17,7 @@ static int test_basic_arithmetic(void)
     return 1;
 }
 
-// Public interface for test runner
-int run_scanner_tests(void)
+int main(void)
 {
     int passed = 0;
     int total = 0;
@@ -28,5 +27,5 @@ int run_scanner_tests(void)
     RUN_TEST("test_basic_arithmetic", test_basic_arithmetic);
     
     printf("\n%d/%d scanner tests passed\n", passed, total);
-    return (passed == total);
+    return (passed == total) ? 0 : 1;
 }
