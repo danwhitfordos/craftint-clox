@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
@@ -388,6 +389,49 @@ InterpretResult interpret(const char *source)
   return run();
 }
 
-void initNative() {
+void initNative(void) {
   defineNative("clock", clockNative);
+}
+
+void initVM(void)
+{
+  resetStack();
+  vm.objects = NULL;
+  vm.outfile = stdout;
+  vm.errfile = stderr;
+
+  initTable(&vm.globals);
+  initTable(&vm.strings);
+
+  initNative();
+}
+
+void freeVM(void)
+{
+  FILE *out = vm.outfile;
+  FILE *err = vm.errfile;
+
+  if (out != stdout && out != stderr) {
+    fflush(out);
+    fclose(out);
+  }
+
+  if (err != out && err != stdout && err != stderr) {
+    fflush(err);
+    fclose(err);
+  }
+
+  vm.outfile = stdout;
+  vm.errfile = stderr;
+
+  freeTable(&vm.globals);
+  freeTable(&vm.strings);
+  freeObjects();
+}
+
+void setAllOutputToBuf(char *buf, size_t len)
+{
+  FILE *f = fmemopen(buf, len, "w+");
+  vm.outfile = f;
+  vm.errfile = f;
 }

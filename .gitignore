@@ -6,4 +6,7 @@ main
 .zig-cache/
 zig-out/
 *~
-
+build/
+build*/
+cmake-build-*/
+CMakeUserPresets.json
