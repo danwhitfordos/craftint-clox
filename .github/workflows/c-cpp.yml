@@ -16,4 +16,4 @@ jobs:
     - name: Make
       run: cmake .
     - name: Test
-      run: ctest .
+      run: ctest --output-on-failure .
