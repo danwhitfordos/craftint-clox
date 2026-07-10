@@ -9,6 +9,21 @@ set(CMAKE_C_EXTENSIONS OFF)
 # Add POSIX features for fmemopen
 add_compile_definitions(_POSIX_C_SOURCE=200809L)
 
+# Optional add definition for DEBUG_PRINT_CODE
+option(DEBUG_PRINT_CODE "Enable debug printing of bytecode" OFF)
+if(DEBUG_PRINT_CODE)
+    add_compile_definitions(DEBUG_PRINT_CODE)
+endif()
+
+option(DEBUG_TRACE_EXECUTION "Enable debug tracing of execution" OFF)
+if(DEBUG_TRACE_EXECUTION)
+    add_compile_definitions(DEBUG_TRACE_EXECUTION)
+endif()
+
+# Print these options for debugging
+message(STATUS "DEBUG_PRINT_CODE: ${DEBUG_PRINT_CODE}")
+message(STATUS "DEBUG_TRACE_EXECUTION: ${DEBUG_TRACE_EXECUTION}")
+
 # Include directories
 include_directories(src)
 
