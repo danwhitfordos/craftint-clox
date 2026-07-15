@@ -20,6 +20,13 @@ if(DEBUG_TRACE_EXECUTION)
     add_compile_definitions(DEBUG_TRACE_EXECUTION)
 endif()
 
+# Error
+if(MSVC)
+    add_compile_options(/W4 /WX)
+else()
+    add_compile_options(-Wall -Werror)
+endif()
+
 # Print these options for debugging
 message(STATUS "DEBUG_PRINT_CODE: ${DEBUG_PRINT_CODE}")
 message(STATUS "DEBUG_TRACE_EXECUTION: ${DEBUG_TRACE_EXECUTION}")

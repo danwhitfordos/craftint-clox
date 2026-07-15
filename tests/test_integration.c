@@ -104,35 +104,35 @@ static int test_locals(void)
 static int test_jumping(void)
 {
     return testFile("examples/jumping.lox",
-        "two plus two is four\n"
-        "ok\n"
-        "ok\n"
-        "ok\n"
-        "ok\n"
-        "while i\n"
-        "0\n"
-        "while i\n"
-        "1\n"
-        "while i\n"
-        "2\n"
-        "while i\n"
-        "3\n"
-        "while i\n"
-        "4\n"
-        "for j\n"
-        "0\n"
-        "for j\n"
-        "1\n"
-        "for j\n"
-        "2\n");
+                    "two plus two is four\n"
+                    "ok\n"
+                    "ok\n"
+                    "ok\n"
+                    "ok\n"
+                    "while i\n"
+                    "0\n"
+                    "while i\n"
+                    "1\n"
+                    "while i\n"
+                    "2\n"
+                    "while i\n"
+                    "3\n"
+                    "while i\n"
+                    "4\n"
+                    "for j\n"
+                    "0\n"
+                    "for j\n"
+                    "1\n"
+                    "for j\n"
+                    "2\n");
 }
 
 static int test_functions(void)
 {
     return testFile("examples/functions.lox",
-        "<fn, areWeHavingItYet>\n"
-        "Yes we are!\n"
-        "22\n");
+                    "<fn, areWeHavingItYet>\n"
+                    "Yes we are!\n"
+                    "22\n");
 }
 
 static int test_fib(void)
@@ -140,18 +140,33 @@ static int test_fib(void)
     return testFile("examples/fib.lox", "55\n");
 }
 
+static int test_closure(void)
+{
+    return testFile("examples/closures.lox", "outer\n");
+}
+
+static int test_closure_perverse(void)
+{
+    return testFile("examples/closuresperverse.lox",
+                    "return from outer\n"
+                    "create inner closure\n"
+                    "value\n");
+}
+
 int main(void)
 {
     int passed = 0;
     int total = 0;
-    
+
     printf("===== Integration Tests =====\n");
     RUN_TEST("test_hello_world", test_hello_world);
     RUN_TEST("test_locals", test_locals);
     RUN_TEST("test_jumping", test_jumping);
     RUN_TEST("test_functions", test_functions);
     RUN_TEST("test_fib", test_fib);
-    
+    RUN_TEST("test_closure", test_closure);
+    RUN_TEST("test_closure_perverse", test_closure_perverse);
+
     printf("\n%d/%d integration tests passed\n", passed, total);
     return (passed == total) ? 0 : 1;
 }
