@@ -26,6 +26,11 @@ typedef struct {
     Obj        *objects;
     FILE       *outfile;
     FILE       *errfile;
+    int         grayCount;
+    int         grayCapacity;
+    Obj       **grayStack;
+    size_t      bytesAllocated;
+    size_t      nextGC;
 } VM;
 
 typedef enum { INTERPRET_OK, INTERPRET_COMPILE_ERROR, INTERPRET_RUNTIME_ERROR } InterpretResult;

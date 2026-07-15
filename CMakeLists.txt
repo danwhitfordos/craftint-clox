@@ -9,27 +9,12 @@ set(CMAKE_C_EXTENSIONS OFF)
 # Add POSIX features for fmemopen
 add_compile_definitions(_POSIX_C_SOURCE=200809L)
 
-# Optional add definition for DEBUG_PRINT_CODE
-option(DEBUG_PRINT_CODE "Enable debug printing of bytecode" OFF)
-if(DEBUG_PRINT_CODE)
-    add_compile_definitions(DEBUG_PRINT_CODE)
-endif()
-
-option(DEBUG_TRACE_EXECUTION "Enable debug tracing of execution" OFF)
-if(DEBUG_TRACE_EXECUTION)
-    add_compile_definitions(DEBUG_TRACE_EXECUTION)
-endif()
-
 # Error
 if(MSVC)
     add_compile_options(/W4 /WX)
 else()
     add_compile_options(-Wall -Werror)
 endif()
-
-# Print these options for debugging
-message(STATUS "DEBUG_PRINT_CODE: ${DEBUG_PRINT_CODE}")
-message(STATUS "DEBUG_TRACE_EXECUTION: ${DEBUG_TRACE_EXECUTION}")
 
 # Include directories
 include_directories(src)
@@ -49,6 +34,33 @@ set(CORE_SOURCES
 
 # Main executable (clox)
 add_executable(clox src/main.c ${CORE_SOURCES})
+
+# Optional add definition for DEBUG_PRINT_CODE
+option(DEBUG_PRINT_CODE "Enable debug printing of bytecode" OFF)
+if(DEBUG_PRINT_CODE)
+    target_compile_definitions(clox PRIVATE DEBUG_PRINT_CODE)
+endif()
+
+option(DEBUG_TRACE_EXECUTION "Enable debug tracing of execution" OFF)
+if(DEBUG_TRACE_EXECUTION)
+    target_compile_definitions(clox PRIVATE DEBUG_TRACE_EXECUTION)
+endif()
+
+option(DEBUG_STRESS_GC "Enable stress testing of garbage collector" OFF)
+if(DEBUG_STRESS_GC)
+    target_compile_definitions(clox PRIVATE DEBUG_STRESS_GC)
+endif()
+
+option(DEBUG_LOG_GC "Enable logging of garbage collector" OFF)
+if(DEBUG_LOG_GC)
+    target_compile_definitions(clox PRIVATE DEBUG_LOG_GC)
+endif()
+
+# Print these options for debugging
+message(STATUS "DEBUG_PRINT_CODE: ${DEBUG_PRINT_CODE}")
+message(STATUS "DEBUG_TRACE_EXECUTION: ${DEBUG_TRACE_EXECUTION}")
+message(STATUS "DEBUG_STRESS_GC: ${DEBUG_STRESS_GC}")
+message(STATUS "DEBUG_LOG_GC: ${DEBUG_LOG_GC}")
 
 # Test executable
 enable_testing()
