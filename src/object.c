@@ -129,5 +129,25 @@ void printObject(FILE *f, Value value) {
     case OBJ_UPVALUE:
         fprintf(f, "upvalue");
         break;
+    case OBJ_CLASS:
+        fprintf(f, "%s", AS_CLASS(value)->name->chars);
+        break;
+    case OBJ_INSTANCE:
+        fprintf(f, "%s instance", AS_INSTANCE(value)->klass->name->chars);
+        break;
     }
+}
+
+ObjClass *newClass(ObjString *name) {
+    ObjClass *klass = ALLOCATE_OBJ(ObjClass, OBJ_CLASS);
+    klass->name     = name;
+
+    return klass;
+}
+
+ObjInstance *newInstance(ObjClass *klass) {
+    ObjInstance *instance = ALLOCATE_OBJ(ObjInstance, OBJ_INSTANCE);
+    instance->klass       = klass;
+    initTable(&instance->fields);
+    return instance;
 }
