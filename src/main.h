@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "common.h"
 #include "chunk.h"
+#include "common.h"
 #include "debug.h"
 #include "memory.h"
 #include "object.h"
