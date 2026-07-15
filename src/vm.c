@@ -415,6 +415,12 @@ static InterpretResult run(void) {
             push(value);
             break;
         }
+        case OP_ASSERT: {
+            if(isFalsey(pop())) {
+                runtimeError("Assertion failed");
+                return INTERPRET_RUNTIME_ERROR;
+            }
+        }
         }
     }
 #undef READ_BYTE

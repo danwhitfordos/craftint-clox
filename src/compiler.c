@@ -540,6 +540,7 @@ ParseRule rules[] = {
     [TOKEN_WHILE]         = {NULL,     NULL,   PREC_NONE      },
     [TOKEN_ERROR]         = {NULL,     NULL,   PREC_NONE      },
     [TOKEN_EOF]           = {NULL,     NULL,   PREC_NONE      },
+    [TOKEN_ASSERT]        = {NULL,     NULL,   PREC_NONE      },
 };
 
 static void parsePrecedence(Precedence precedence) {
@@ -650,6 +651,12 @@ static void printStatement(void) {
     emitByte(OP_PRINT);
 }
 
+static void assertStatement(void) {
+    expression();
+    consume(TOKEN_SEMICOLON, "Expect ';' after valule.");
+    emitByte(OP_ASSERT);
+}
+
 static void whileStatement() {
     int loopStart = currentChunk()->count;
     consume(TOKEN_LEFT_PAREN, "Expect '(' after 'while'.");
@@ -681,6 +688,7 @@ static void synchronize(void) {
         case TOKEN_WHILE:
         case TOKEN_PRINT:
         case TOKEN_RETURN:
+        case TOKEN_ASSERT:
             return;
         default:;
         }
@@ -822,6 +830,8 @@ static void statement(void) {
         forStatement();
     } else if (match(TOKEN_RETURN)) {
         returnStatement();
+    } else if (match(TOKEN_ASSERT)) {
+        assertStatement();
     } else {
         expressionStatement();
     }

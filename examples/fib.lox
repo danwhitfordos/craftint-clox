@@ -4,5 +4,6 @@ fun fib(n) {
 }
 
 var start = clock();
+assert fib(10) == 55;
 print fib(10);
 var time = clock() - start; // Don't print it breaks the test

@@ -1,0 +1,13 @@
+class Brioche {}
+
+print Brioche;
+var b = Brioche();
+print b;
+
+class Pair {}
+
+var pair = Pair();
+pair.first = 1;
+pair.second = 2;
+assert pair.first + pair.second == 3;
+print pair.first + pair.second; // 3 I think

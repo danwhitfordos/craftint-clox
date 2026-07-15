@@ -5,3 +5,4 @@ var a = 50;
 }
 print a;
 
+assert a == 50;

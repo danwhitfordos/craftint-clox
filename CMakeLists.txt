@@ -88,6 +88,13 @@ add_test(NAME test_chunk COMMAND test_chunk)
 add_test(NAME test_scanner COMMAND test_scanner)
 add_test(NAME test_integration COMMAND test_integration)
 
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+add_test(
+    NAME test_examples
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/test_examples.py
+            $<TARGET_FILE:clox> ${CMAKE_SOURCE_DIR}/examples
+)
+
 # Set working directory for tests so relative paths work
-set_tests_properties(test_chunk test_scanner test_integration
+set_tests_properties(test_chunk test_scanner test_integration test_examples
     PROPERTIES WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
