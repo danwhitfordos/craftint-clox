@@ -31,6 +31,7 @@ typedef struct {
     Obj       **grayStack;
     size_t      bytesAllocated;
     size_t      nextGC;
+    ObjString  *initString;
 } VM;
 
 typedef enum { INTERPRET_OK, INTERPRET_COMPILE_ERROR, INTERPRET_RUNTIME_ERROR } InterpretResult;

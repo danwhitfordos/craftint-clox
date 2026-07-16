@@ -112,6 +112,7 @@ static TokenType identifierType(void) {
                 return checkKeyword(2, 4, "sert", TOKEN_ASSERT);
             }
         }
+        break;
     case 'c':
         return checkKeyword(1, 4, "lass", TOKEN_CLASS);
     case 'e':

@@ -13,7 +13,7 @@ add_compile_definitions(_POSIX_C_SOURCE=200809L)
 if(MSVC)
     add_compile_options(/W4 /WX)
 else()
-    add_compile_options(-Wall -Werror)
+    add_compile_options(-Wall -Werror -Wextra -Wpedantic)
 endif()
 
 # Include directories

@@ -1,0 +1,25 @@
+class Brunch {
+  bacon() {}
+  eggs() {}
+}
+
+class Scone {
+  topping(first, second) {
+    return "scone with " + first + " and " + second;
+  }
+}
+
+var scone = Scone();
+assert scone.topping("berries", "cream") == "scone with berries and cream";
+
+class Person {
+  sayName() {
+    return this.name;
+  }
+}
+
+var jane = Person();
+jane.name = "Jane";
+
+var method = jane.sayName;
+assert method() == "Jane";

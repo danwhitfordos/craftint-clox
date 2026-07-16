@@ -1,0 +1,29 @@
+class Brunch {
+  init(food, drink) {
+    this.food = food;
+    this.drink = drink;
+  }
+}
+
+var brunch = Brunch("eggs", "coffee");
+
+assert brunch.food == "eggs";
+assert brunch.drink == "coffee";
+
+class CoffeeMaker {
+  init(coffee) {
+    this.coffee = coffee;
+  }
+
+  brew() {
+    print "Enjoy your cup of " + this.coffee;
+
+    // No reusing the grounds!
+    this.coffee = nil;
+  }
+}
+
+var maker = CoffeeMaker("coffee and chicory");
+assert maker.coffee == "coffee and chicory";
+maker.brew();
+assert maker.coffee == nil;

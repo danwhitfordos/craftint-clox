@@ -37,6 +37,8 @@ static char *readFile(const char *path) {
 }
 
 static int testFile(const char *fname, const char *expected_output) {
+    fprintf(stderr, "Testing file '%s'\n", fname);
+
     // Initialize VM fresh for each test
     initVM();
 

@@ -6,4 +6,6 @@ fun outer() {
   }
   inner();
 }
+
+assert x == "global";
 outer();

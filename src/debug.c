@@ -123,6 +123,10 @@ int disassembleInstruction(Chunk *chunk, int offset) {
         return constantInstruction("OP_GET_PROPERTY", chunk, offset);
     case OP_SET_PROPERTY:
         return constantInstruction("OP_SET_PROPERTY", chunk, offset);
+    case OP_METHOD:
+        return constantInstruction("OP_METHOD", chunk, offset);
+    case OP_ASSERT:
+        return constantInstruction("OP_RETURN", chunk, offset);
     default:
         fprintf(stderr, "Unknown OP_CODE %d\n", instruction);
         return offset + 1;
