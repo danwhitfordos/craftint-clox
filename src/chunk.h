@@ -38,6 +38,7 @@ typedef enum {
     OP_GET_PROPERTY,
     OP_ASSERT,
     OP_METHOD,
+    OP_INVOKE,
 } OpCode;
 
 typedef struct {
