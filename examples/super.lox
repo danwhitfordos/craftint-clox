@@ -1,0 +1,20 @@
+class A {
+  method() {
+    return "A method";
+  }
+}
+
+class B < A {
+  method() {
+    return "B method";
+  }
+
+  test() {
+    return super.method();
+  }
+}
+
+class C < B {}
+
+var c = C();
+assert c.test() == "A method";
