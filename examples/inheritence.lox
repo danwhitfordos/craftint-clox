@@ -1,0 +1,15 @@
+class Doughnut {
+  cook() {
+    return "Dunk in the fryer.";
+  }
+}
+
+class Cruller < Doughnut {
+  finish() {
+    return "Glaze with icing.";
+  }
+}
+
+var c = Cruller();
+assert c.cook() == "Dunk in the fryer.";
+assert c.finish() == "Glaze with icing.";
